@@ -60,7 +60,7 @@ module.exports = function(grunt) {
       case 'start':
         args.unshift('server');
         _currentProcess = spawn('rails', args, {
-            stdio: ['ignore', process.stdout, 'ignore']
+            stdio: ['ignore', process.stdout, process.stderr]
         });
 
         process.on('exit', function() {
@@ -72,7 +72,7 @@ module.exports = function(grunt) {
 
           _currentProcess.on('close', function() {
             _currentProcess = spawn('rails', args, {
-              stdio: 'inherit'
+              stdio: ['ignore', process.stdout, process.stderr]
             });
           });
 
@@ -81,12 +81,12 @@ module.exports = function(grunt) {
           if(grunt.file.exists(_pidFile)) {
             var killArgs = ['-s', 'QUIT', grunt.file.read(_pidFile)];
             var killTask = spawn('kill', killArgs, {
-              stdio: 'ignore'
+              stdio: ['ignore', process.stdout, process.stderr]
             });
 
             args.unshift('server');
             _currentProcess = spawn('rails', args, {
-              stdio: ['ignore', process.stdout, 'ignore']
+              stdio: ['ignore', process.stdout, process.stderr]
             });
           }
         }
@@ -99,7 +99,7 @@ module.exports = function(grunt) {
             args = ['-s', 'QUIT', grunt.file.read(_pidFile)];
           }
           spawn('kill', args, {
-            stdio: 'inherit'
+            stdio: ['ignore', process.stdout, process.stderr]
           });
         }
         break;
